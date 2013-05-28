@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+import urlparse
+import sys
+
+import requests
+
+from roku import get_roku_host
+
+
+def main():
+    cmd = sys.argv[1]
+    roku_host = get_roku_host()
+
+    def url(path):
+        return urlparse.urlunparse(('http', roku_host, path, None, None, None))
+
+    if cmd in ('play', 'pause'):
+        key = 'Play'
+    elif cmd == 'home':
+        key = 'Home'
+    else:
+        key = None
+
+    if not key:
+        return
+
+    requests.post(url("/keypress/%s" % key))
+
+
+if __name__ == '__main__':
+    main()
